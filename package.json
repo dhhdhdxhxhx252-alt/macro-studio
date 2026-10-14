@@ -1,0 +1,43 @@
+{
+  "name": "macro-studio",
+  "version": "1.0.0",
+  "description": "Визуальный редактор и валидатор JSON-конфигураций автоматизации: категории из каталога, параметры, выполнение, защита, группы. UI в браузере + CLI для CI.",
+  "type": "module",
+  "license": "MIT",
+  "author": "dhhdhdxhxhx252-alt",
+  "bin": {
+    "macro-check": "dist/cli/check.js"
+  },
+  "files": [
+    "dist",
+    "catalogs"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5174",
+    "build:cli": "tsc -p tsconfig.cli.json",
+    "build:test": "tsc -p tsconfig.test.json",
+    "test": "npm run build:test && node --test \"build/test/*.test.js\"",
+    "check": "npm run build:cli && node dist/cli/check.js samples/weekend.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.7"
+  },
+  "keywords": [
+    "macro",
+    "automation",
+    "config",
+    "editor",
+    "validator",
+    "json",
+    "vite",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}

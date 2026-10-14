@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "name": "Сломанный",
+  "description": "Демонстрация того, что ловит проверка",
+  "macros": [
+    {
+      "id": "fishing-bad",
+      "kind": "fishing",
+      "name": "",
+      "enabled": true,
+      "cycles": 10,
+      "delay": 0,
+      "repeats": 99999,
+      "automation": {
+        "version": 1,
+        "parameters": { "reactionMs": 1200, "hookWindowMs": 800, "minWeight": 40, "unknownSwitch": true },
+        "execution": { "startDelay": 900, "intervalMode": "random", "variation": 17, "breakSeconds": 3 },
+        "safety": { "confidence": 30, "onError": "ignore", "logLevel": "all" }
+      }
+    },
+    {
+      "id": "__proto__",
+      "kind": "farming",
+      "name": "Ферма",
+      "enabled": "yes",
+      "cycles": 5,
+      "delay": 4,
+      "repeats": 0
+    }
+  ],
+  "groups": [
+    {
+      "id": "morning",
+      "name": "Утро",
+      "color": "red",
+      "macroIds": ["cafe-draft", "fishing-bad", "fishing-bad"]
+    }
+  ],
+  "settings": { "notifications": true, "compact": false, "animations": true, "stopOnError": false, "shortcut": "F1" }
+}

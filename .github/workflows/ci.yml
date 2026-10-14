@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm test
+
+      - name: Web build
+        run: npm run build
+
+      - name: CLI compiles
+        run: npm run build:cli
+
+      - name: Valid sample passes
+        run: node dist/cli/check.js samples/weekend.json
+
+      - name: Broken sample is rejected
+        run: |
+          if node dist/cli/check.js samples/broken.json; then
+            echo "samples/broken.json не должен проходить проверку" >&2
+            exit 1
+          fi
+
+      - name: Normalization is idempotent
+        run: |
+          node dist/cli/check.js samples/weekend.json --fix --out /tmp/normalized.json --quiet
+          node dist/cli/check.js /tmp/normalized.json

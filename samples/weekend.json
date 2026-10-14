@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "name": "Выходные",
+  "description": "Набор на два вечерних захода: рыбалка, очередь в кафе и городское кольцо",
+  "exportedAt": "2026-10-12T18:00:00.000Z",
+  "macros": [
+    {
+      "id": "fishing-evening",
+      "kind": "fishing",
+      "name": "Вечерняя рыбалка",
+      "description": "Причал на леске, цель — 30 хвостов",
+      "enabled": true,
+      "cycles": 40,
+      "delay": 5,
+      "repeats": 0,
+      "automation": {
+        "version": 1,
+        "parameters": { "location": "pier", "bait": "lure", "castPower": 80, "catchTarget": 30 },
+        "execution": { "startDelay": 3, "intervalMode": "variable", "variation": 20, "breakEvery": 15, "breakSeconds": 45, "maxMinutes": 90, "notifications": "finish" },
+        "safety": { "confidence": 85, "cycleTimeout": 180, "onError": "retry", "retryLimit": 2, "retryDelay": 4, "pauseWhenHidden": true, "logLevel": "normal" }
+      }
+    },
+    {
+      "id": "cafe-queue",
+      "kind": "cafe",
+      "name": "Очередь в кафе",
+      "description": "Стойка, быстрые заказы, премиум подача",
+      "enabled": true,
+      "cycles": 25,
+      "delay": 5,
+      "repeats": 0,
+      "automation": {
+        "version": 1,
+        "parameters": { "station": "counter", "orderPolicy": "quick", "quality": "premium", "parallelOrders": 2 },
+        "execution": { "startDelay": 2, "intervalMode": "fixed", "variation": 15, "breakEvery": 10, "breakSeconds": 30, "maxMinutes": 0, "notifications": "finish" },
+        "safety": { "confidence": 80, "cycleTimeout": 120, "onError": "retry", "retryLimit": 2, "retryDelay": 3, "pauseWhenHidden": true, "logLevel": "normal" }
+      }
+    },
+    {
+      "id": "racing-city",
+      "kind": "racing",
+      "name": "Городское кольцо",
+      "description": "Два круга, баланс, цель — подиум",
+      "enabled": false,
+      "cycles": 0,
+      "delay": 7,
+      "repeats": 3,
+      "automation": {
+        "version": 1,
+        "parameters": { "route": "city", "laps": 2, "driving": "balanced", "goal": "podium" },
+        "execution": { "startDelay": 5, "intervalMode": "variable", "variation": 25, "breakEvery": 8, "breakSeconds": 60, "maxMinutes": 45, "notifications": "all" },
+        "safety": { "confidence": 90, "cycleTimeout": 300, "onError": "skip", "retryLimit": 1, "retryDelay": 5, "pauseWhenHidden": false, "logLevel": "verbose" }
+      }
+    }
+  ],
+  "groups": [
+    {
+      "id": "evening",
+      "name": "Вечер",
+      "description": "То, что запускаю каждый вечер",
+      "color": "#a578ff",
+      "macroIds": ["fishing-evening", "cafe-queue"]
+    },
+    {
+      "id": "weekend-full",
+      "name": "Полные выходные",
+      "description": "",
+      "color": "#5ec8ff",
+      "macroIds": ["fishing-evening", "cafe-queue", "racing-city"]
+    }
+  ],
+  "settings": { "notifications": true, "compact": false, "animations": true, "stopOnError": true, "shortcut": "F8" }
+}

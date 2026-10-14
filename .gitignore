@@ -1,0 +1,7 @@
+node_modules/
+dist/
+build/
+web/
+.chrome-shot/
+*.log
+.DS_Store

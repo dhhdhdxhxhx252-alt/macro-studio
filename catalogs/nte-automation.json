@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "title": "NTE automation",
+  "kinds": [
+    {
+      "id": "fishing",
+      "label": "Рыбалка",
+      "delay": 4,
+      "fields": [
+        { "key": "location", "label": "Точка ловли", "section": "Снасти", "type": "select", "default": "current", "options": [{ "value": "current", "label": "Текущая" }, { "value": "shore", "label": "Берег" }, { "value": "pier", "label": "Причал" }] },
+        { "key": "bait", "label": "Наживка", "section": "Снасти", "type": "select", "default": "universal", "options": [{ "value": "universal", "label": "Универсальная" }, { "value": "insects", "label": "Насекомые" }, { "value": "lure", "label": "Блесна" }] },
+        { "key": "castPower", "label": "Сила заброса", "section": "Снасти", "type": "range", "default": 70, "min": 20, "max": 100, "step": 5, "unit": "%" },
+        { "key": "reactionMs", "label": "Задержка подсечки", "section": "Подсечка", "type": "range", "default": 350, "min": 100, "max": 1500, "step": 50, "unit": "мс" },
+        { "key": "hookWindowMs", "label": "Окно подсечки", "section": "Подсечка", "type": "number", "default": 1200, "min": 200, "max": 3000, "step": 50, "unit": "мс" },
+        { "key": "barMode", "label": "Полоса вываживания", "section": "Подсечка", "type": "segments", "default": "hold", "options": [{ "value": "hold", "label": "Удержания" }, { "value": "tap", "label": "Тапы" }] },
+        { "key": "stallRetry", "label": "Пауза до перезаброса", "section": "Подсечка", "type": "number", "default": 14, "min": 5, "max": 30, "step": 1, "unit": "сек." },
+        { "key": "autoRecast", "label": "Перезаброс после цикла", "section": "Подсечка", "type": "toggle", "default": true },
+        { "key": "catchMode", "label": "Приоритет улова", "section": "Лимиты", "type": "segments", "default": "all", "options": [{ "value": "all", "label": "Любой" }, { "value": "rare", "label": "Редкий" }, { "value": "trophy", "label": "Трофей" }] },
+        { "key": "releaseSmall", "label": "Отпускать мелкую", "section": "Лимиты", "type": "toggle", "default": true },
+        { "key": "minWeight", "label": "Минимальный вес", "section": "Лимиты", "type": "range", "default": 2, "min": 0, "max": 20, "step": 0.5, "unit": "кг", "requires": { "key": "releaseSmall", "value": true } },
+        { "key": "catchTarget", "label": "Целевой улов", "section": "Лимиты", "type": "number", "default": 0, "min": 0, "max": 999, "step": 1, "unit": "рыб" },
+        { "key": "stopOnFull", "label": "Стоп при полном инвентаре", "section": "Лимиты", "type": "toggle", "default": true },
+        { "key": "capacity", "label": "Свободные ячейки", "section": "Лимиты", "type": "number", "default": 60, "min": 1, "max": 500, "step": 1, "unit": "мест", "requires": { "key": "stopOnFull", "value": true } },
+        { "key": "baitRestock", "label": "Дозакупать наживку", "section": "Лимиты", "type": "toggle", "default": false },
+        { "key": "restockEvery", "label": "Дозакупка каждые", "section": "Лимиты", "type": "number", "default": 20, "min": 5, "max": 100, "step": 5, "unit": "забросов", "requires": { "key": "baitRestock", "value": true } }
+      ],
+      "rules": [{ "id": "hook-window", "type": "ordered", "message": "Окно подсечки должно быть больше задержки подсечки.", "smaller": "reactionMs", "larger": "hookWindowMs" }]
+    },
+    {
+      "id": "racing",
+      "label": "Гонки",
+      "delay": 6,
+      "fields": [
+        { "key": "route", "label": "Маршрут", "section": "Заезд", "type": "select", "default": "city", "options": [{ "value": "city", "label": "Городское кольцо" }, { "value": "coast", "label": "Прибрежный" }, { "value": "custom", "label": "Свой" }] },
+        { "key": "routeName", "label": "Имя своего маршрута", "section": "Заезд", "type": "text", "default": "Мой маршрут", "max": 60, "requires": { "key": "route", "value": "custom" } },
+        { "key": "laps", "label": "Кругов", "section": "Заезд", "type": "number", "default": 2, "min": 1, "max": 10, "step": 1, "unit": "круга" },
+        { "key": "driving", "label": "Стиль вождения", "section": "Вождение", "type": "segments", "default": "balanced", "options": [{ "value": "careful", "label": "Плавно" }, { "value": "balanced", "label": "Баланс" }, { "value": "fast", "label": "Быстро" }] },
+        { "key": "speedLimit", "label": "Ограничение скорости", "section": "Вождение", "type": "range", "default": 140, "min": 60, "max": 240, "step": 10, "unit": "км/ч" },
+        { "key": "boost", "label": "Использовать ускорение", "section": "Вождение", "type": "toggle", "default": true },
+        { "key": "boostMode", "label": "Момент ускорения", "section": "Вождение", "type": "segments", "default": "straight", "options": [{ "value": "straight", "label": "На прямой" }, { "value": "exit", "label": "После поворота" }], "requires": { "key": "boost", "value": true } },
+        { "key": "brakeAssist", "label": "Помощь при торможении", "section": "Вождение", "type": "toggle", "default": true },
+        { "key": "goal", "label": "Цель заезда", "section": "Результат", "type": "segments", "default": "finish", "options": [{ "value": "finish", "label": "Финиш" }, { "value": "podium", "label": "Топ-3" }, { "value": "win", "label": "Победа" }] },
+        { "key": "targetWins", "label": "Успешных заездов", "section": "Результат", "type": "number", "default": 0, "min": 0, "max": 1000, "step": 1, "unit": "заездов" },
+        { "key": "autoRepair", "label": "Обслуживать автомобиль", "section": "Результат", "type": "toggle", "default": true },
+        { "key": "repairAt", "label": "Порог обслуживания", "section": "Результат", "type": "range", "default": 30, "min": 10, "max": 70, "step": 5, "unit": "%", "requires": { "key": "autoRepair", "value": true } }
+      ],
+      "rules": [{ "id": "route-name", "type": "nonEmpty", "message": "Для своего маршрута укажите название.", "field": "routeName", "when": { "key": "route", "value": "custom" } }]
+    },
+    {
+      "id": "cafe",
+      "label": "Кафе",
+      "delay": 5,
+      "fields": [
+        { "key": "station", "label": "Рабочая зона", "section": "Очередь", "type": "select", "default": "counter", "options": [{ "value": "counter", "label": "Стойка" }, { "value": "window", "label": "Окно заказов" }, { "value": "terrace", "label": "Терраса" }] },
+        { "key": "menu", "label": "Позиции меню", "section": "Очередь", "type": "multi", "default": ["coffee", "tea", "dessert"], "options": [{ "value": "coffee", "label": "Кофе" }, { "value": "tea", "label": "Чай" }, { "value": "dessert", "label": "Десерты" }, { "value": "meal", "label": "Блюда" }] },
+        { "key": "orderPolicy", "label": "Приоритет заказов", "section": "Очередь", "type": "segments", "default": "queue", "options": [{ "value": "queue", "label": "По очереди" }, { "value": "quick", "label": "Быстрые" }, { "value": "profit", "label": "Доходные" }] },
+        { "key": "parallelOrders", "label": "Заказов за цикл", "section": "Обслуживание", "type": "number", "default": 2, "min": 1, "max": 4, "step": 1, "unit": "заказа" },
+        { "key": "quality", "label": "Качество подачи", "section": "Обслуживание", "type": "segments", "default": "standard", "options": [{ "value": "standard", "label": "Стандарт" }, { "value": "premium", "label": "Премиум" }] },
+        { "key": "serveDelayMs", "label": "Пауза перед подачей", "section": "Обслуживание", "type": "range", "default": 800, "min": 200, "max": 3000, "step": 100, "unit": "мс" },
+        { "key": "collectTips", "label": "Собирать чаевые", "section": "Обслуживание", "type": "toggle", "default": true },
+        { "key": "autoRestock", "label": "Пополнять запасы", "section": "Закупки", "type": "toggle", "default": true },
+        { "key": "restockAt", "label": "Порог пополнения", "section": "Закупки", "type": "range", "default": 20, "min": 10, "max": 50, "step": 5, "unit": "%", "requires": { "key": "autoRestock", "value": true } },
+        { "key": "restockBudget", "label": "Бюджет закупок", "section": "Закупки", "type": "number", "default": 2000, "min": 0, "max": 100000, "step": 100, "unit": "монет", "requires": { "key": "autoRestock", "value": true } },
+        { "key": "dryRun", "label": "Пробный прогон", "section": "Закупки", "type": "toggle", "default": false },
+        { "key": "revenueTarget", "label": "Целевая выручка", "section": "Цели", "type": "number", "default": 0, "min": 0, "max": 1000000, "step": 100, "unit": "монет" },
+        { "key": "ordersTarget", "label": "Лимит заказов", "section": "Цели", "type": "number", "default": 0, "min": 0, "max": 9999, "step": 1, "unit": "заказов" }
+      ]
+    },
+    {
+      "id": "quests",
+      "label": "Задания",
+      "delay": 8,
+      "fields": [
+        { "key": "types", "label": "Типы заданий", "section": "Отбор", "type": "multi", "default": ["daily"], "options": [{ "value": "daily", "label": "Ежедневные" }, { "value": "weekly", "label": "Недельные" }, { "value": "side", "label": "Побочные" }] },
+        { "key": "priority", "label": "Приоритет", "section": "Отбор", "type": "segments", "default": "nearest", "options": [{ "value": "nearest", "label": "Ближайшие" }, { "value": "quick", "label": "Быстрые" }, { "value": "reward", "label": "Награда" }] },
+        { "key": "difficulty", "label": "Сложность", "section": "Отбор", "type": "segments", "default": "normal", "options": [{ "value": "easy", "label": "Лёгкие" }, { "value": "normal", "label": "Обычные" }, { "value": "any", "label": "Любые" }] },
+        { "key": "fastTravel", "label": "Быстрое перемещение", "section": "Пути", "type": "toggle", "default": false },
+        { "key": "route", "label": "Построение пути", "section": "Пути", "type": "segments", "default": "safe", "options": [{ "value": "safe", "label": "Безопасный" }, { "value": "short", "label": "Короткий" }], "requires": { "key": "fastTravel", "value": false } },
+        { "key": "skipDialog", "label": "Пропускать диалоги", "section": "Пути", "type": "toggle", "default": true },
+        { "key": "interactionMs", "label": "Задержка взаимодействия", "section": "Пути", "type": "range", "default": 500, "min": 200, "max": 2000, "step": 100, "unit": "мс" },
+        { "key": "autoCollect", "label": "Забирать награды", "section": "Пути", "type": "toggle", "default": true },
+        { "key": "claimRewards", "label": "Сбор почты и сундуков", "section": "Пути", "type": "toggle", "default": false },
+        { "key": "skipCombat", "label": "Пропускать боевые", "section": "Энергия", "type": "toggle", "default": false },
+        { "key": "energyReserve", "label": "Резерв энергии", "section": "Энергия", "type": "range", "default": 20, "min": 0, "max": 80, "step": 5, "unit": "%" },
+        { "key": "useConsumables", "label": "Восстанавливать энергию", "section": "Энергия", "type": "toggle", "default": false },
+        { "key": "target", "label": "Цель по заданиям", "section": "Энергия", "type": "number", "default": 0, "min": 0, "max": 999, "step": 1, "unit": "заданий" },
+        { "key": "stopWhenComplete", "label": "Завершить после списка", "section": "Энергия", "type": "toggle", "default": true }
+      ]
+    },
+    {
+      "id": "artifacts",
+      "label": "Артефакты",
+      "delay": 7,
+      "fields": [
+        { "key": "zone", "label": "Зона поиска", "section": "Маршрут", "type": "select", "default": "current", "options": [{ "value": "current", "label": "Текущая область" }, { "value": "urban", "label": "Город" }, { "value": "outskirts", "label": "Окраины" }, { "value": "underground", "label": "Подземка" }] },
+        { "key": "route", "label": "Порядок обхода", "section": "Маршрут", "type": "segments", "default": "loop", "options": [{ "value": "loop", "label": "По кругу" }, { "value": "nearest", "label": "Ближайшие" }] },
+        { "key": "scanRadius", "label": "Радиус сканирования", "section": "Маршрут", "type": "range", "default": 40, "min": 10, "max": 100, "step": 5, "unit": "м" },
+        { "key": "rarity", "label": "Минимальная редкость", "section": "Сбор", "type": "segments", "default": "all", "options": [{ "value": "all", "label": "Любая" }, { "value": "rare", "label": "Редкая" }, { "value": "epic", "label": "Эпическая" }] },
+        { "key": "types", "label": "Типы находок", "section": "Сбор", "type": "multi", "default": ["relics", "fragments"], "options": [{ "value": "relics", "label": "Реликвии" }, { "value": "fragments", "label": "Фрагменты" }, { "value": "materials", "label": "Материалы" }] },
+        { "key": "autoPickup", "label": "Автоматический сбор", "section": "Сбор", "type": "toggle", "default": true },
+        { "key": "pickupDelayMs", "label": "Задержка подбора", "section": "Сбор", "type": "range", "default": 400, "min": 100, "max": 2000, "step": 50, "unit": "мс", "requires": { "key": "autoPickup", "value": true } },
+        { "key": "ignoreOwned", "label": "Пропускать дубликаты", "section": "Сбор", "type": "toggle", "default": true },
+        { "key": "inventoryLimit", "label": "Порог заполнения", "section": "Лимиты", "type": "range", "default": 90, "min": 10, "max": 100, "step": 5, "unit": "%" },
+        { "key": "target", "label": "Цель по находкам", "section": "Лимиты", "type": "number", "default": 0, "min": 0, "max": 9999, "step": 1, "unit": "предметов" },
+        { "key": "trackRespawn", "label": "Повторять маршрут", "section": "Лимиты", "type": "toggle", "default": true },
+        { "key": "respawnWait", "label": "Ожидание восстановления", "section": "Лимиты", "type": "number", "default": 60, "min": 10, "max": 900, "step": 10, "unit": "сек.", "requires": { "key": "trackRespawn", "value": true } }
+      ],
+      "rules": [{ "id": "pickup-target", "type": "requiresValue", "message": "Без автоматического сбора цель по находкам должна быть 0.", "field": "target", "equals": 0, "when": { "key": "autoPickup", "value": false } }]
+    }
+  ]
+}
