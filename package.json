@@ -18,7 +18,7 @@
     "preview": "vite preview --port 5174",
     "build:cli": "tsc -p tsconfig.cli.json",
     "build:test": "tsc -p tsconfig.test.json",
-    "test": "npm run build:test && node --test \"build/test/*.test.js\"",
+    "test": "npm run build:test && node --test build/test/*.test.js",
     "check": "npm run build:cli && node dist/cli/check.js samples/weekend.json",
     "typecheck": "tsc --noEmit"
   },
